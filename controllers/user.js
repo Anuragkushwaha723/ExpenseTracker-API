@@ -1,5 +1,5 @@
 const User = require('../models/user');
-
+const bcrypt = require('bcrypt');
 module.exports.postUserSignUp = async (req, res, next) => {
     try {
         const name = req.body.name;
@@ -7,17 +7,19 @@ module.exports.postUserSignUp = async (req, res, next) => {
         const password = req.body.password;
 
         if (!name || !email || !password) {
-            res.status(500).json({ error: 'Missing some data' });
+            return res.status(500).json({ message: 'Missing some data' });
         }
-
-        let responseData = await User.create({
-            name: name,
-            email: email,
-            password: password
-        });
-        res.status(201).json(responseData);
-    } catch (error) {
-        res.status(500).json({ error: error });
+        const saltRounds = 10;
+        bcrypt.hash(password, saltRounds, async (err, hash) => {
+            try {
+                await User.create({ name: name, email: email, password: hash });
+                res.status(201).json({ message: 'Successfully create new user' });
+            } catch (error) {
+                res.status(500).json({ message: 'Please try again' });
+            }
+        })
+    } catch (err) {
+        res.status(500).json({ message: err });
     }
 };
 
@@ -26,17 +28,23 @@ module.exports.postUserLogin = async (req, res, next) => {
         const email = req.body.email;
         const password = req.body.password;
         if (!email || !password) {
-            res.status(500).json({ message: 'Missing some data' });
+            return res.status(500).json({ message: 'Missing some data' });
         }
 
         let responseData = await User.findAll({ where: { email: email } });
         if (responseData.length > 0) {
-            if (responseData[0].password === password) {
-                res.status(201).json({ message: 'User logged in successfully' });
-            } else {
-                res.status(500).json({ message: 'Password is incorrect' });
-            }
+            bcrypt.compare(password, responseData[0].password, async (err, result) => {
+                if (err) {
+                    res.status(201).json({ message: 'Something went wrong' });
+                }
 
+                if (result === true) {
+                    res.status(201).json({ message: 'User logged in successfully' });
+                } else {
+                    res.status(500).json({ message: 'Password is incorrect' });
+                }
+
+            })
         } else {
             res.status(500).json({ message: 'User not found' });
         }
