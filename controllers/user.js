@@ -25,7 +25,7 @@ module.exports.postUserSignUp = async (req, res, next) => {
 };
 
 function generateAccessToken(id) {
-    return jwt.sign({ userId: id }, '12mffffhfn565swdoetxdjkdoc7654358gfhyre5gfr5dd5hb4d');
+    return jwt.sign({ userId: id }, process.env.TOKEN_SECRET);
 }
 module.exports.postUserLogin = async (req, res, next) => {
     try {
