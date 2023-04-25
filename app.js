@@ -8,6 +8,7 @@ const orderModel = require('./models/order');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
+const premiumRoutes = require('./routes/premium');
 const sequelize = require('./utils/database');
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json({ extended: false }));
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
+app.use('/premium', premiumRoutes);
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
 userModel.hasMany(orderModel);

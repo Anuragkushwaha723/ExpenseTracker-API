@@ -1,5 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
+const jwt = require('jsonwebtoken');
 exports.purchasepremium = async (req, res, next) => {
     try {
         let rzp = new Razorpay({
@@ -20,13 +21,28 @@ exports.purchasepremium = async (req, res, next) => {
 }
 exports.updateTransactionStatus = async (req, res, next) => {
     try {
+        const userId = req.user.id;
         const { order_id, payment_id, } = req.body;
         const order = await Order.findOne({ where: { orderid: order_id } });
         const promise1 = order.update({ paymentid: payment_id, status: 'SUCCESSFULL' });
         const promise2 = req.user.update({ ispremiumuser: true });
         await Promise.all([promise1, promise2]);
-        return res.status(202).json({ success: true, message: 'Transcation Successfull' })
+        return res.status(202).json({ success: true, message: 'Transcation Successfull', token: generateAccessToken(userId, undefined, true) })
     } catch (error) {
         res.status(403).json({ message: 'Something went wrong', error: error });
     }
+}
+
+exports.failedTransactionStatus = async (req, res, next) => {
+    try {
+        const { order_id } = req.body;
+        const order = await Order.findOne({ where: { orderid: order_id } });
+        await order.update({ status: 'FAILED' });
+        return res.status(203).json({ success: false, message: 'Transcation Failed' })
+    } catch (error) {
+        res.status(403).json({ message: 'Something went wrong', error: error });
+    }
+}
+function generateAccessToken(id, name, ispremiumuser) {
+    return jwt.sign({ userId: id, name: name, ispremiumuser: ispremiumuser }, process.env.TOKEN_SECRET);
 }
