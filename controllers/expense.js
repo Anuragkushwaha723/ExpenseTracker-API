@@ -7,10 +7,12 @@ exports.postExpenseData = async (req, res, next) => {
         const category = req.body.category;
 
         if (!amount || !description || !category) {
-            res.status(500).json({ message: 'Missing some data' });
+            return res.status(500).json({ message: 'Missing some data' });
         }
         let data = await req.user.createExpense({ amount: amount, description: description, category: category });
-        res.status(201).json(data);
+        let totalExpense = req.user.totalExpense + amount;
+        await req.user.update({ totalExpense: totalExpense });
+        return res.status(201).json(data);
     } catch (error) {
         res.status(500).json({ message: error });
     }
