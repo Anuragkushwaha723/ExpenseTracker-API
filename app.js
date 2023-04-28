@@ -9,6 +9,7 @@ const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
 const premiumRoutes = require('./routes/premium');
+const passwordRoutes = require('./routes/password');
 const sequelize = require('./utils/database');
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
+app.use('/password', passwordRoutes);
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
 userModel.hasMany(orderModel);
