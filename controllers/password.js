@@ -68,11 +68,12 @@ exports.getUpdatePassword = async (req, res, next) => {
     try {
         const id = req.params.id;
         const password = req.query.newpassword;
-        let data = await Forgotpassword.findOne({ where: { id: id } });
+        let data = await Forgotpassword.findOne({ where: { id: id, isadmin: true } });
         if (data) {
             try {
                 const user = await User.findOne({ where: { id: data.userId } });
                 if (user) {
+                    await data.update({ isadmin: false });
                     const saltRounds = 10;
                     bcrypt.hash(password, saltRounds, async (err, hash) => {
                         if (err) {
