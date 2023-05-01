@@ -46,7 +46,7 @@ exports.getResetPassword = async (req, res, next) => {
         if (data) {
             res.status(200).send(`<html>
                                     <form action="/password/updatepassword/${id}" method="get">
-                                        <label for="newpassword">Enter New password</label>
+                                        <label for="newpassword">Enter new password : </label>
                                         <input name="newpassword" type="password" required></input>
                                         <button>reset password</button>
                                     </form>
@@ -65,21 +65,23 @@ exports.getResetPassword = async (req, res, next) => {
 
 }
 exports.getUpdatePassword = async (req, res, next) => {
+    let t = await sequelize.transaction();
     try {
         const id = req.params.id;
         const password = req.query.newpassword;
-        let data = await Forgotpassword.findOne({ where: { id: id, isadmin: true } });
+        let data = await Forgotpassword.findOne({ where: { id: id, isactive: true } });
         if (data) {
             try {
                 const user = await User.findOne({ where: { id: data.userId } });
                 if (user) {
-                    await data.update({ isadmin: false });
                     const saltRounds = 10;
                     bcrypt.hash(password, saltRounds, async (err, hash) => {
                         if (err) {
                             throw new Error('Something went wrong');
                         }
-                        await user.update({ password: hash });
+                        await user.update({ password: hash }, { transaction: t });
+                        await data.update({ isactive: false }, { transaction: t });
+                        await t.commit();
                         return res.status(201).json({ message: 'Successfuly update the new password' })
                     })
                 }
@@ -88,6 +90,7 @@ exports.getUpdatePassword = async (req, res, next) => {
             }
         }
     } catch (error) {
+        await t.rollback();
         res.status(404).json(error);
     }
 

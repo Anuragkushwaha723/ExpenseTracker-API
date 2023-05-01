@@ -1,5 +1,7 @@
 const Expense = require('../models/expense');
 const sequelize = require('../utils/database');
+const UserServices = require('../services/userservices');
+const S3Services = require('../services/S3Services');
 exports.postExpenseData = async (req, res, next) => {
     let t = await sequelize.transaction();
     try {
@@ -23,7 +25,7 @@ exports.postExpenseData = async (req, res, next) => {
 
 exports.getExpenseData = async (req, res, next) => {
     try {
-        let data = await req.user.getExpenses();
+        let data = await UserServices.getExpenses(req);
         res.status(201).json(data);
     } catch (error) {
         res.status(500).json({ message: error });
@@ -51,3 +53,20 @@ exports.deleteExpenseData = async (req, res, next) => {
         res.status(500).json({ message: error });
     }
 };
+
+
+exports.downloadExpenses = async (req, res, next) => {
+    try {
+        if (!req.user.ispremiumuser) {
+            return res.status(401).json({ message: 'User is not a premium User' })
+        }
+        const expenses = await req.user.getExpenses();
+        const expenseStringify = JSON.stringify(expenses);
+        const userId = req.user.id;
+        const filename = `Expense${userId}/${new Date()}.txt`;
+        const fileUrl = await S3Services.uploadToS3(expenseStringify, filename);
+        res.status(201).json({ fileUrl: fileUrl });
+    } catch (error) {
+        res.status(500).json({ message: 'Downloading is not working' });
+    }
+}

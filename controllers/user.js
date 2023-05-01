@@ -56,3 +56,4 @@ module.exports.postUserLogin = async (req, res, next) => {
         res.status(500).json({ message: error });
     }
 };
+
