@@ -1,4 +1,5 @@
 const Expense = require('../models/expense');
+const DownloadList = require('../models/downloadList');
 const sequelize = require('../utils/database');
 const UserServices = require('../services/userservices');
 const S3Services = require('../services/S3Services');
@@ -60,13 +61,31 @@ exports.downloadExpenses = async (req, res, next) => {
         if (!req.user.ispremiumuser) {
             return res.status(401).json({ message: 'User is not a premium User' })
         }
-        const expenses = await req.user.getExpenses();
+        const expenses = await UserServices.getExpenses(req, {
+            attributes: ['amount', 'description', 'category']
+        });
         const expenseStringify = JSON.stringify(expenses);
         const userId = req.user.id;
         const filename = `Expense${userId}/${new Date()}.txt`;
         const fileUrl = await S3Services.uploadToS3(expenseStringify, filename);
+        let newDate = new Date();
+        await req.user.createDownloadList({ url: fileUrl, date: newDate });
         res.status(201).json({ fileUrl: fileUrl });
     } catch (error) {
         res.status(500).json({ message: 'Downloading is not working' });
+    }
+}
+
+exports.listOfDownloads = async (req, res, next) => {
+    try {
+        if (!req.user.ispremiumuser) {
+            return res.status(401).json({ message: 'User is not a premium User' })
+        }
+        let listOfDownloadsInfo = await DownloadList.findAll({
+            attributes: ['date', 'url'],
+        });
+        res.status(201).json(listOfDownloadsInfo);
+    } catch (error) {
+        res.status(500).json({ message: 'Something went wrong' });
     }
 }

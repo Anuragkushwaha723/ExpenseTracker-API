@@ -7,4 +7,5 @@ route.post('/add-expense', authenticateRoutes.authenticate, expenseRoutes.postEx
 route.get('/get-expense', authenticateRoutes.authenticate, expenseRoutes.getExpenseData);
 route.delete('/delete-expense/:id', authenticateRoutes.authenticate, expenseRoutes.deleteExpenseData);
 route.get('/download', authenticateRoutes.authenticate, expenseRoutes.downloadExpenses);
+route.get('/lists', authenticateRoutes.authenticate, expenseRoutes.listOfDownloads);
 module.exports = route;

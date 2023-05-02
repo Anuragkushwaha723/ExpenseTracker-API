@@ -6,6 +6,7 @@ const userModel = require('./models/user');
 const expenseModel = require('./models/expense');
 const orderModel = require('./models/order');
 const forgotpasswordModel = require('./models/forgotpassword');
+const downloadListModel = require('./models/downloadList');
 const userRoutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
@@ -27,6 +28,8 @@ userModel.hasMany(orderModel);
 orderModel.belongsTo(userModel);
 userModel.hasMany(forgotpasswordModel);
 forgotpasswordModel.belongsTo(userModel);
+userModel.hasMany(downloadListModel);
+downloadListModel.belongsTo(userModel);
 sequelize.sync()
     .then((result) => {
         app.listen(3000);
