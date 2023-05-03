@@ -13,11 +13,31 @@ exports.postExpenseData = async (req, res, next) => {
         if (!amount || !description || !category) {
             return res.status(500).json({ message: 'Missing some data' });
         }
-        let data = await req.user.createExpense({ amount: amount, description: description, category: category }, { transaction: t });
+        await req.user.createExpense({ amount: amount, description: description, category: category }, { transaction: t });
         let totalExpense = Number(req.user.totalExpense) + Number(amount);
         await req.user.update({ totalExpense: totalExpense }, { transaction: t });
         await t.commit();
-        return res.status(201).json(data);
+        let allExpensesCount = await Expense.count({ where: { userId: req.user.id } });
+        let itemsPerPage = 6;
+        let page = Math.ceil(allExpensesCount / itemsPerPage) || 1;
+        let dataRes = await UserServices.getExpenses(req, {
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage
+        });
+
+        return res.status(201).json({
+            product: dataRes,
+            pageData: {
+                hasCurrentPage: allExpensesCount > 0,
+                currentPage: page,
+                hasNextPage: itemsPerPage * page < allExpensesCount,
+                nextpage: +page + 1,
+                hasPreviousPage: page > 1,
+                previousPage: page - 1,
+                hasLastPage: Math.ceil(allExpensesCount / itemsPerPage) > +page + 1,
+                lastPage: Math.ceil(allExpensesCount / itemsPerPage)
+            }
+        });
     } catch (error) {
         await t.rollback();
         return res.status(500).json({ message: error });
@@ -26,8 +46,26 @@ exports.postExpenseData = async (req, res, next) => {
 
 exports.getExpenseData = async (req, res, next) => {
     try {
-        let data = await UserServices.getExpenses(req);
-        res.status(201).json(data);
+        let page = req.query.page || 1;
+        let itemsPerPage = 6;
+        let totalExpense = await Expense.count({ where: { userId: req.user.id } });
+        let data = await UserServices.getExpenses(req, {
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage
+        });
+        res.status(201).json({
+            product: data,
+            pageData: {
+                hasCurrentPage: totalExpense > 0,
+                currentPage: page,
+                hasNextPage: itemsPerPage * page < totalExpense,
+                nextpage: +page + 1,
+                hasPreviousPage: page > 1,
+                previousPage: page - 1,
+                hasLastPage: Math.ceil(totalExpense / itemsPerPage) > +page + 1,
+                lastPage: Math.ceil(totalExpense / itemsPerPage)
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: error });
     }
@@ -48,7 +86,26 @@ exports.deleteExpenseData = async (req, res, next) => {
         await req.user.update({ totalExpense: updateExpense }, { transaction: t });
         await data[0].destroy({ transaction: t });
         await t.commit();
-        res.status(201).json(prodId);
+        let allExpensesCount = await Expense.count({ where: { userId: req.user.id } });
+        let itemsPerPage = 6;
+        let page = Number(req.query.page) || 1;
+        let dataRes = await UserServices.getExpenses(req, {
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage
+        });
+        res.status(201).json({
+            product: dataRes,
+            pageData: {
+                hasCurrentPage: allExpensesCount > 0,
+                currentPage: page,
+                hasNextPage: itemsPerPage * page < allExpensesCount,
+                nextpage: +page + 1,
+                hasPreviousPage: page > 1,
+                previousPage: page - 1,
+                hasLastPage: Math.ceil(allExpensesCount / itemsPerPage) > +page + 1,
+                lastPage: Math.ceil(allExpensesCount / itemsPerPage)
+            }
+        });
     } catch (error) {
         await t.rollback();
         res.status(500).json({ message: error });
