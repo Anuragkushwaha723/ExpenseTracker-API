@@ -18,7 +18,7 @@ exports.postExpenseData = async (req, res, next) => {
         await req.user.update({ totalExpense: totalExpense }, { transaction: t });
         await t.commit();
         let allExpensesCount = await Expense.count({ where: { userId: req.user.id } });
-        let itemsPerPage = 6;
+        let itemsPerPage = Number(req.query.itemsPerPage) || 6;
         let page = Math.ceil(allExpensesCount / itemsPerPage) || 1;
         let dataRes = await UserServices.getExpenses(req, {
             offset: (page - 1) * itemsPerPage,
@@ -47,7 +47,7 @@ exports.postExpenseData = async (req, res, next) => {
 exports.getExpenseData = async (req, res, next) => {
     try {
         let page = req.query.page || 1;
-        let itemsPerPage = 6;
+        let itemsPerPage = Number(req.query.itemsPerPage) || 6;
         let totalExpense = await Expense.count({ where: { userId: req.user.id } });
         let data = await UserServices.getExpenses(req, {
             offset: (page - 1) * itemsPerPage,
@@ -87,7 +87,7 @@ exports.deleteExpenseData = async (req, res, next) => {
         await data[0].destroy({ transaction: t });
         await t.commit();
         let allExpensesCount = await Expense.count({ where: { userId: req.user.id } });
-        let itemsPerPage = 6;
+        let itemsPerPage = Number(req.query.itemsPerPage) || 6;
         let page = Number(req.query.page) || 1;
         let dataRes = await UserServices.getExpenses(req, {
             offset: (page - 1) * itemsPerPage,
