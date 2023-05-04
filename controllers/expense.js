@@ -40,7 +40,7 @@ exports.postExpenseData = async (req, res, next) => {
         });
     } catch (error) {
         await t.rollback();
-        return res.status(500).json({ message: error });
+        return res.status(500).json({ message: 'Something went wrong' });
     }
 };
 
@@ -67,7 +67,7 @@ exports.getExpenseData = async (req, res, next) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: error });
+        res.status(500).json({ message: 'Something went wrong' });
     }
 };
 
@@ -108,7 +108,7 @@ exports.deleteExpenseData = async (req, res, next) => {
         });
     } catch (error) {
         await t.rollback();
-        res.status(500).json({ message: error });
+        res.status(500).json({ message: 'Something went wrong' });
     }
 };
 
@@ -129,7 +129,7 @@ exports.downloadExpenses = async (req, res, next) => {
         await req.user.createDownloadList({ url: fileUrl, date: newDate });
         res.status(201).json({ fileUrl: fileUrl });
     } catch (error) {
-        res.status(500).json({ message: 'Downloading is not working' });
+        res.status(500).json({ message: 'Something went wrong' });
     }
 }
 

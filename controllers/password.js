@@ -31,7 +31,7 @@ exports.postForgotPassword = async (req, res, next) => {
                 throw new Error('Something went wrong');
             }
         } else {
-            throw new Error('User does not exist');
+            throw new Error('Something went wrong');
         }
     } catch (error) {
         await t.rollback();
