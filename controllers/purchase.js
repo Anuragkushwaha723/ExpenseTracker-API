@@ -16,7 +16,7 @@ exports.purchasepremium = async (req, res, next) => {
             return res.status(201).json({ order, key_id: rzp.key_id });
         })
     } catch (error) {
-        res.status(403).json({ message: 'Something went wrong', error: error });
+        res.status(403).json({ message: 'Something went wrong' });
     }
 }
 exports.updateTransactionStatus = async (req, res, next) => {
@@ -29,7 +29,7 @@ exports.updateTransactionStatus = async (req, res, next) => {
         await Promise.all([promise1, promise2]);
         return res.status(202).json({ success: true, message: 'Transcation Successfull', token: generateAccessToken(userId, undefined, true) })
     } catch (error) {
-        res.status(403).json({ message: 'Something went wrong', error: error });
+        res.status(403).json({ message: 'Something went wrong' });
     }
 }
 
@@ -40,7 +40,7 @@ exports.failedTransactionStatus = async (req, res, next) => {
         await order.update({ status: 'FAILED' });
         return res.status(203).json({ success: false, message: 'Transcation Failed' })
     } catch (error) {
-        res.status(403).json({ message: 'Something went wrong', error: error });
+        res.status(403).json({ message: 'Something went wrong' });
     }
 }
 function generateAccessToken(id, name, ispremiumuser) {

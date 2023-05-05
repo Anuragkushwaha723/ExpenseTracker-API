@@ -17,7 +17,7 @@ exports.postForgotPassword = async (req, res, next) => {
                 const apiKey = client.authentications['api-key'];
                 apiKey.apiKey = process.env.SIB_KEY_SECRET;
                 const tranEmailApi = new Sib.TransactionalEmailsApi();
-                const sender = { name: 'Anurag', email: 'anuragkushwaha723@gmail.com' };
+                const sender = { name: process.env.SENDER_NAME, email: process.env.SENDER_EMAIL };
                 const receivers = [{ email: emailId }];
                 await tranEmailApi.sendTransacEmail({
                     sender,
@@ -35,7 +35,7 @@ exports.postForgotPassword = async (req, res, next) => {
         }
     } catch (error) {
         await t.rollback();
-        return res.status(500).json({ message: error });
+        return res.status(500).json({ message: 'Something went wrong' });
     }
 }
 
