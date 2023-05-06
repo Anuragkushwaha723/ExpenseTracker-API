@@ -12,6 +12,6 @@ module.exports.getLeaderboard = async (req, res, next) => {
         });
         res.status(200).json(leaderBoardOfAllUsers);
     } catch (error) {
-        res.status(403).json({ message: 'Something went wrong', error: error });
+        res.status(403).json({ message: 'Something went wrong' });
     }
 }

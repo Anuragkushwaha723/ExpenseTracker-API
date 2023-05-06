@@ -20,7 +20,7 @@ module.exports.postUserSignUp = async (req, res, next) => {
             }
         })
     } catch (err) {
-        res.status(500).json({ message: err });
+        res.status(500).json({ message: 'Something went wrong' });
     }
 };
 
@@ -53,7 +53,7 @@ module.exports.postUserLogin = async (req, res, next) => {
             res.status(500).json({ message: 'User not found' });
         }
     } catch (error) {
-        res.status(500).json({ message: error });
+        res.status(500).json({ message: 'Something went wrong' });
     }
 };
 
