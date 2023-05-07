@@ -26,6 +26,9 @@ app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);
+app.use((req, res, next) => {
+    res.sendFile(path.join(__dirname, 'public', 'signUp.html'));
+})
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
 userModel.hasMany(orderModel);
