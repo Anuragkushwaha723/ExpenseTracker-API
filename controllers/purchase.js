@@ -44,5 +44,5 @@ exports.failedTransactionStatus = async (req, res, next) => {
     }
 }
 function generateAccessToken(id, name, ispremiumuser) {
-    return jwt.sign({ userId: id, name: name, ispremiumuser: ispremiumuser }, process.env.TOKEN_SECRET);
+    return jwt.sign({ userId: id, name: name, ispremiumuser: ispremiumuser }, `${process.env.TOKEN_SECRET}`);
 }
