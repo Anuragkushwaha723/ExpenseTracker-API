@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const helemt = require('helmet');
 require('dotenv').config();
 const userModel = require('./models/user');
 const expenseModel = require('./models/expense');
@@ -19,7 +18,6 @@ const sequelize = require('./utils/database');
 const app = express();
 
 app.use(cors());
-app.use(helemt());
 app.use(bodyParser.json({ extended: false }));
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
@@ -27,7 +25,7 @@ app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);
 app.use((req, res, next) => {
-    res.sendFile(path.join(__dirname, 'public', 'signUp.html'));
+    res.sendFile(path.join(__dirname, `public/${req.url}`));
 })
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);

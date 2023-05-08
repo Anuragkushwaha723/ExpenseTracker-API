@@ -23,7 +23,7 @@ exports.postForgotPassword = async (req, res, next) => {
                     sender,
                     to: receivers,
                     subject: 'Reset your password in Expense Tracker App',
-                    htmlContent: `<a href="http://localhost:3000/password/resetpassword/${id}">Change your password</a>`
+                    htmlContent: `<a href="http://16.16.172.172:3000/password/resetpassword/${id}">Change your password</a>`
                 });
                 await t.commit();
                 return res.status(201).json({ message: 'Link to reset password sent to your mail ' });
