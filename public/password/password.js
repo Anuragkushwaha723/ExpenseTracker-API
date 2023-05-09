@@ -2,7 +2,7 @@ async function submitInfo(e) {
     try {
         e.preventDefault();
         const emailId = e.target.email.value;
-        let data = await axios.post('http://localhost:3000/password/forgotpassword', { emailId: emailId });
+        let data = await axios.post('http://16.16.208.254:3000/password/forgotpassword', { emailId: emailId });
         if (data.status === 201) {
             document.getElementById('message').innerHTML = `<p>${data.data.message}</p>`;
             let errorElement = document.getElementById('error');

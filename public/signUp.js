@@ -6,7 +6,7 @@ async function submitUserInfo(e) {
             email: e.target.email.value,
             password: e.target.password.value
         }
-        let responseData = await axios.post('http://localhost:3000/user/signUp', userInfo);
+        let responseData = await axios.post('http://16.16.208.254:3000/user/signUp', userInfo);
 
         if (responseData.status === 201) {
             document.location.href = './login/login.html'; //change signup page to login page
