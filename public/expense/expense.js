@@ -28,7 +28,7 @@ async function submitExpense(e) {
             category: e.target.category.value
         };
         let itemsPerPage = localStorage.getItem('itemsPerPage');
-        let responseData = await axios.post(`http://16.16.172.172:3000/expense/add-expense?itemsPerPage=${itemsPerPage}`, expenseDetails, { headers: { 'Authorization': token } });
+        let responseData = await axios.post(`http://http://16.16.169.199:3000/expense/add-expense?itemsPerPage=${itemsPerPage}`, expenseDetails, { headers: { 'Authorization': token } });
         postProducts(responseData.data);
 
     } catch (error) {
@@ -57,7 +57,7 @@ async function removefromscreen(data) {
     try {
         let page = localStorage.getItem('page');
         let itemsPerPage = localStorage.getItem('itemsPerPage');
-        let responseData = await axios.delete(`http://16.16.172.172:3000/expense/delete-expense/${data.id}?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
+        let responseData = await axios.delete(`http://http://16.16.169.199:3000/expense/delete-expense/${data.id}?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             postProducts(responseData.data);
         }
@@ -68,12 +68,12 @@ async function removefromscreen(data) {
 }
 // razor pay button 
 document.getElementById('rzp-button1').onclick = async function (e) {
-    let response = await axios.get('http://16.16.172.172:3000/purchase/purchasemembership', { headers: { 'Authorization': token } });
+    let response = await axios.get('http://http://16.16.169.199:3000/purchase/purchasemembership', { headers: { 'Authorization': token } });
     var options = {
         "key": response.data.key_id,
         "order_id": response.data.order.id,
         "handler": async function (response) {
-            let respData = await axios.post('http://16.16.172.172:3000/purchase/updatetransactionstatus', {
+            let respData = await axios.post('http://http://16.16.169.199:3000/purchase/updatetransactionstatus', {
                 order_id: options.order_id,
                 payment_id: response.razorpay_payment_id
             }, { headers: { 'Authorization': token } });
@@ -88,7 +88,7 @@ document.getElementById('rzp-button1').onclick = async function (e) {
     const rzp1 = new Razorpay(options);
     rzp1.open();
     rzp1.on('payment.failed', async function (response) {
-        await axios.post('http://16.16.172.172:3000/purchase/failedtransactionstatus', {
+        await axios.post('http://http://16.16.169.199:3000/purchase/failedtransactionstatus', {
             order_id: options.order_id,
         }, { headers: { 'Authorization': token } });
         alert('Something went wrong');
@@ -130,7 +130,7 @@ function leaderBoardButton() {
     document.getElementById('showLeaderboardId').onclick = async function (e) {
         try {
             e.preventDefault();
-            let responseData = await axios.get('http://16.16.172.172:3000/premium/showLeaderBoard', { headers: { 'Authorization': token } });
+            let responseData = await axios.get('http://http://16.16.169.199:3000/premium/showLeaderBoard', { headers: { 'Authorization': token } });
             leaderboardHeading();
             initialLeaderBoardScreenClean();
             for (let i = 0; i < responseData.data.length; i++) {
@@ -183,7 +183,7 @@ function downloadButtonFun() {
     document.getElementById('downloadFile').onclick = async function (e) {
         try {
             e.preventDefault();
-            let respData = await axios.get('http://16.16.172.172:3000/expense/download', { headers: { "Authorization": token } });
+            let respData = await axios.get('http://http://16.16.169.199:3000/expense/download', { headers: { "Authorization": token } });
             if (respData.status === 201) {
                 var a = document.createElement("a");
                 a.href = respData.data.fileUrl;
@@ -207,7 +207,7 @@ function ListsOfDownloadButtonFunc() {
     document.getElementById('listOfUrls').onclick = async function (e) {
         try {
             e.preventDefault();
-            let respData = await axios.get('http://16.16.172.172:3000/expense/lists', { headers: { "Authorization": token } });
+            let respData = await axios.get('http://http://16.16.169.199:3000/expense/lists', { headers: { "Authorization": token } });
             if (respData.status === 201) {
                 downloadListHeadingFun();
                 initialDownloadListsScreenClean();
@@ -259,7 +259,7 @@ function paginationButton(page) {
 async function getProducts(page) {
     try {
         let itemsPerPage = localStorage.getItem('itemsPerPage');
-        let responseData = await axios.get(`http://16.16.172.172:3000/expense/get-expense?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
+        let responseData = await axios.get(`http://http://16.16.169.199:3000/expense/get-expense?page=${page}&itemsPerPage=${itemsPerPage}`, { headers: { 'Authorization': token } });
         if (responseData.status === 201) {
             localStorage.setItem('page', page);
             itemList.innerHTML = '';
