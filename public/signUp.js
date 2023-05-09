@@ -4,7 +4,7 @@ async function submitUserInfo(e) {
         let userInfo = {
             name: e.target.name.value,
             email: e.target.email.value,
-            password: e.target.password.valuenp
+            password: e.target.password.value
         }
         let responseData = await axios.post('http://localhost:3000/user/signUp', userInfo);
 
