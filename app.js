@@ -27,6 +27,7 @@ app.use('/password', passwordRoutes);
 app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, `public/${req.url}`));
 })
+
 userModel.hasMany(expenseModel);
 expenseModel.belongsTo(userModel);
 userModel.hasMany(orderModel);
@@ -35,6 +36,7 @@ userModel.hasMany(forgotpasswordModel);
 forgotpasswordModel.belongsTo(userModel);
 userModel.hasMany(downloadListModel);
 downloadListModel.belongsTo(userModel);
+
 sequelize.sync()
     .then((result) => {
         app.listen(process.env.PORT || 4000);
