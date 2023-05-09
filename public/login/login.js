@@ -5,6 +5,7 @@ async function submitUserInfo(e) {
             email: e.target.email.value,
             password: e.target.password.value
         }
+
         let responseData = await axios.post('http://16.16.169.199:3000/user/login', userInfo);
         if (responseData.status === 201) {
             window.alert(responseData.data.message); //change signup page to login page

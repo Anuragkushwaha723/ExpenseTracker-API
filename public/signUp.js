@@ -18,5 +18,6 @@ async function submitUserInfo(e) {
         } else {
             errorElement.innerHTML = `<p id="errorChild" style="color:red">${error.response.data.message}</p>`;
         }
+
     }
 }

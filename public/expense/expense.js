@@ -4,6 +4,7 @@ let token = localStorage.getItem('token');
 window.addEventListener('DOMContentLoaded', async () => {
     try {
         let decodedToken = parseJwt(token);
+
         let ispremiumuser = decodedToken.ispremiumuser;
         if (ispremiumuser === true) {
             premiumStatusMessage();
