@@ -6,7 +6,7 @@ async function submitUserInfo(e) {
             password: e.target.password.value
         }
 
-        let responseData = await axios.post('http://16.16.169.199:3000/user/login', userInfo);
+        let responseData = await axios.post('http://localhost:3000/user/login', userInfo);
         if (responseData.status === 201) {
             window.alert(responseData.data.message); //change signup page to login page
             localStorage.setItem('token', responseData.data.token);
