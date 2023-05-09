@@ -37,6 +37,7 @@ userModel.hasMany(downloadListModel);
 downloadListModel.belongsTo(userModel);
 sequelize.sync()
     .then((result) => {
+        console.log('listeniing');
         app.listen(process.env.PORT || 4000);
     })
     .catch();
